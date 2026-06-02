@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
@@ -15,7 +15,7 @@ spring:
         format_sql: true
 
   flyway:
-    enabled: false
+    enabled: true
 
 server:
   port: 8080
