@@ -3,12 +3,15 @@ package com.reservecore.domain.user;
 import com.reservecore.api.auth.AuthResponse;
 import com.reservecore.api.auth.LoginRequest;
 import com.reservecore.api.auth.RegisterRequest;
+import com.reservecore.api.user.UserResponse;
 import com.reservecore.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * ユーザー認証のビジネスロジック
@@ -63,5 +66,25 @@ public class UserService {
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
         return new AuthResponse(token, user.getEmail(), user.getName(), user.getRole().name());
+    }
+
+    /**
+     * 認証済みユーザー自身の情報を取得
+     */
+    @Transactional(readOnly = true)
+    public UserResponse getMyInfo(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("ユーザーが見つかりません"));
+        return UserResponse.from(user);
+    }
+
+    /**
+     * 全ユーザー一覧を取得（ADMIN専用）
+     */
+    @Transactional(readOnly = true)
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserResponse::from)
+                .toList();
     }
 }

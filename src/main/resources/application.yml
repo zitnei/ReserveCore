@@ -24,3 +24,7 @@ app:
   jwt:
     secret: ${JWT_SECRET:reservecore-secret-key-change-in-production-min-256-bits}
     expiration-ms: 86400000  # 24時間
+  admin:
+    email: ${ADMIN_EMAIL:admin@reservecore.com}
+    password: ${ADMIN_PASSWORD:admin1234}  # 本番では必ず環境変数で上書きすること
+    name: ${ADMIN_NAME:管理者}
