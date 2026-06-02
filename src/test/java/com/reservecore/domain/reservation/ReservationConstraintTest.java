@@ -1,17 +1,13 @@
 package com.reservecore.domain.reservation;
 
 import com.reservecore.domain.service.Service;
-import com.reservecore.domain.service.ServiceRepository;
 import com.reservecore.domain.store.Store;
-import com.reservecore.domain.store.StoreRepository;
 import com.reservecore.domain.user.Role;
 import com.reservecore.domain.user.User;
-import com.reservecore.domain.user.UserRepository;
+import com.reservecore.support.IntegrationTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.time.LocalDateTime;
@@ -23,13 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * 二重予約防止のEXCLUDE制約（V3）がDBレベルで効くことを検証する。
  */
-@SpringBootTest
-class ReservationConstraintTest {
-
-    @Autowired private StoreRepository storeRepository;
-    @Autowired private ServiceRepository serviceRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private ReservationRepository reservationRepository;
+class ReservationConstraintTest extends IntegrationTestSupport {
 
     private Store store;
     private Service service;
@@ -37,13 +27,7 @@ class ReservationConstraintTest {
     private User staff;
 
     @BeforeEach
-    void setUp() {
-        // FK整合性を保つ順序で初期化
-        reservationRepository.deleteAll();
-        serviceRepository.deleteAll();
-        storeRepository.deleteAll();
-        userRepository.deleteAll();
-
+    void setUpEntities() {
         store = storeRepository.save(Store.builder()
                 .name("テスト店")
                 .openingTime(LocalTime.of(9, 0))

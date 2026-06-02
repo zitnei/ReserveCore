@@ -6,13 +6,10 @@ import com.reservecore.api.auth.LoginRequest;
 import com.reservecore.api.auth.RegisterRequest;
 import com.reservecore.domain.user.Role;
 import com.reservecore.domain.user.User;
-import com.reservecore.domain.user.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.reservecore.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,9 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 権限制御（JWT認証 + ロール別アクセス）の結合テスト
  */
-@SpringBootTest
-@AutoConfigureMockMvc
-class UserControllerTest {
+class UserControllerTest extends IntegrationTestSupport {
 
     @Autowired
     private MockMvc mockMvc;
@@ -37,15 +32,7 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @BeforeEach
-    void setUp() {
-        userRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("トークンなしで /api/users/me にアクセスすると 401")

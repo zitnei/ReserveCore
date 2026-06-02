@@ -1,13 +1,10 @@
 package com.reservecore.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reservecore.domain.user.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.reservecore.support.IntegrationTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -17,23 +14,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * 認証API（登録・ログイン）の結合テスト
  */
-@SpringBootTest
-@AutoConfigureMockMvc
-class AuthControllerTest {
+class AuthControllerTest extends IntegrationTestSupport {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @BeforeEach
-    void setUp() {
-        userRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("ユーザー登録が成功し、JWTトークンが返る")
