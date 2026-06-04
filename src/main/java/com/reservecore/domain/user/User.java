@@ -55,4 +55,9 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    /** ロールを変更する（CUSTOMER → STAFF への昇格などに使用） */
+    public void changeRole(Role role) {
+        this.role = role;
+    }
 }
