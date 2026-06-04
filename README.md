@@ -377,7 +377,7 @@ src/test/java/com/reservecore/
 
 MVP（認証・権限・予約 CRUD）完成後に想定している拡張です。
 
-- [ ] **CI**：GitHub Actions で push / PR 時にビルド＆テストを自動実行
+- [x] **CI**：GitHub Actions で push / PR 時にビルド＆テストを自動実行（`.github/workflows/ci.yml`・初回pushで有効化）
 - [ ] **予約の承認フロー**：`PENDING → CONFIRMED`（現状は登録時に `CONFIRMED`）
 - [ ] **リソースの一般化**：座席・席・設備など「スタッフ以外の予約枠」への対応
 - [ ] **売上・在庫**：会計・在庫引当（予約に金額スナップショットを保持）

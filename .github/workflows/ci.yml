@@ -1,0 +1,60 @@
+name: CI
+
+# push / Pull Request のたびにビルドとテストを自動実行する
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    # テストは実 PostgreSQL に接続するため、サービスコンテナとして起動する。
+    # 認証情報・DB名は application.yml のデフォルトと一致させている。
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: reservecore
+          POSTGRES_USER: reservecore_user
+          POSTGRES_PASSWORD: reservecore_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U reservecore_user -d reservecore"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build & Test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/reservecore
+          SPRING_DATASOURCE_USERNAME: reservecore_user
+          SPRING_DATASOURCE_PASSWORD: reservecore_pass
+        run: ./gradlew build --no-daemon
+
+      # 失敗時もテストレポートを確認できるよう、常にアップロードする
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test
+          if-no-files-found: ignore
