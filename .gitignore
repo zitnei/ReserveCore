@@ -19,3 +19,6 @@ Thumbs.db
 
 # Env
 .env
+
+# Claude Code（マシン固有のローカル設定）
+.claude/settings.local.json
