@@ -4,11 +4,14 @@
 Spring Boot + PostgreSQL + Docker で構築し、**認証・認可・データ整合性・テスト**といった
 バックエンド開発の基礎を一通り実装しています。
 
-![Java](https://img.shields.io/badge/Java-17-orange)
+[![CI](https://github.com/zitnei/ReserveCore/actions/workflows/ci.yml/badge.svg)](https://github.com/zitnei/ReserveCore/actions/workflows/ci.yml)
+![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-6DB33F?logo=springboot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-37%20passing-success)
+![Tests](https://img.shields.io/badge/tests-46%20passing-success)
+
+> ✅ GitHub Actions の CI で **毎 push / PR ごとに全 46 テストを自動実行**し、グリーンを維持しています（上部バッジは最新状態）。
 
 > **このリポジトリで伝えたいこと**
 > 「動くものを作る」だけでなく、**二重予約をDBレベルで防ぐ**・**ロールごとに操作を制御する**・
@@ -204,7 +207,7 @@ erDiagram
 
 ### A. Docker だけで起動（推奨）
 ```bash
-git clone <this-repo>
+git clone https://github.com/zitnei/ReserveCore.git
 cd ReserveCore
 docker compose up --build
 ```
@@ -377,7 +380,7 @@ src/test/java/com/reservecore/
 
 MVP（認証・権限・予約 CRUD）完成後に想定している拡張です。
 
-- [x] **CI**：GitHub Actions で push / PR 時にビルド＆テストを自動実行（`.github/workflows/ci.yml`・初回pushで有効化）
+- [x] **CI**：GitHub Actions で push / PR ごとにビルド＆全46テストを自動実行（**稼働中** — 上部バッジ参照）
 - [ ] **予約の承認フロー**：`PENDING → CONFIRMED`（現状は登録時に `CONFIRMED`）
 - [ ] **リソースの一般化**：座席・席・設備など「スタッフ以外の予約枠」への対応
 - [ ] **売上・在庫**：会計・在庫引当（予約に金額スナップショットを保持）
