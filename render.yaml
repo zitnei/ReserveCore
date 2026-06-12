@@ -1,0 +1,54 @@
+# ============================================================
+# Render Blueprint: ReserveCore API + PostgreSQL
+# 使い方:
+#   1. このリポジトリを GitHub に push
+#   2. https://dashboard.render.com/blueprints から "New Blueprint Instance"
+#   3. このリポジトリを選択 → Apply
+#   4. デプロイ完了後、CORS_ALLOWED_ORIGINS と ADMIN_PASSWORD を Render の
+#      Environment タブで本番値に上書き
+# ============================================================
+
+databases:
+  - name: reservecore-db
+    plan: free
+    databaseName: reservecore
+    user: reservecore_user
+    # Render の Free Postgres は 90 日で期限切れになる。
+    # 期限が近づいたら新規 DB に Flyway で再構築する想定。
+    postgresMajorVersion: "15"
+
+services:
+  - type: web
+    name: reservecore-api
+    runtime: docker
+    plan: free
+    region: singapore        # 日本に近いリージョン
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /actuator/health
+    envVars:
+      # DB 接続情報は Render 側で自動注入される
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: reservecore-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: reservecore-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: reservecore-db
+          property: password
+      # JWT シークレットは Render が自動生成
+      - key: JWT_SECRET
+        generateValue: true
+      # 初期 ADMIN — 本番では Render の Environment タブで上書きする
+      - key: ADMIN_EMAIL
+        value: admin@reservecore.com
+      - key: ADMIN_PASSWORD
+        sync: false          # Render UI で手動入力 (Git にコミットしない)
+      - key: ADMIN_NAME
+        value: 管理者
+      # CORS: Vercel にフロントをデプロイ後、ここを実 URL に上書き
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false          # UI で手動入力 (例: https://reservecore-frontend.vercel.app)
