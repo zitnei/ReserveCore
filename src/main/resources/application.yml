@@ -49,3 +49,7 @@ app:
     # フロントエンドの許可 Origin (カンマ区切りで複数可)
     # ローカル: http://localhost:3000 / 本番: Vercel デプロイ URL
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  demo-data:
+    # 起動時にデモ用の店舗・サービス・スタッフ・サンプル顧客を投入するか。
+    # 実運用に切り替える場合は DEMO_DATA_ENABLED=false で無効化できる。
+    enabled: ${DEMO_DATA_ENABLED:true}
