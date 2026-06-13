@@ -13,6 +13,7 @@ databases:
     plan: free
     databaseName: reservecore
     user: reservecore_user
+    region: oregon           # API と同一リージョンにする (内部ネットワーク接続のため必須)
     # Render の Free Postgres は 90 日で期限切れになる。
     # 期限が近づいたら新規 DB に Flyway で再構築する想定。
     postgresMajorVersion: "15"
@@ -22,15 +23,29 @@ services:
     name: reservecore-api
     runtime: docker
     plan: free
-    region: singapore        # 日本に近いリージョン
+    # DB と必ず同一リージョンにすること。Render Free の内部ネットワークは
+    # 同一リージョン間でのみ接続可能なため。DB がデフォルトの oregon にあるので揃える。
+    region: oregon
     dockerfilePath: ./Dockerfile
     healthCheckPath: /actuator/health
     envVars:
-      # DB 接続情報は Render 側で自動注入される
-      - key: SPRING_DATASOURCE_URL
+      # DB 接続情報は Render 側で自動注入される。
+      # 注意: Render の connectionString は "postgresql://..." 形式で、
+      #       JDBC が要求する "jdbc:postgresql://..." 形式ではない。
+      #       そのため host/port/database を個別に取得し、
+      #       application.yml 側で "jdbc:postgresql://${host}:${port}/${db}" を組み立てる。
+      - key: DB_HOST
         fromDatabase:
           name: reservecore-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: reservecore-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: reservecore-db
+          property: database
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: reservecore-db

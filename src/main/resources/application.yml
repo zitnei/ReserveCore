@@ -1,6 +1,12 @@
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/reservecore}
+    # 接続 URL の決定順:
+    #   1. SPRING_DATASOURCE_URL が直接指定されていればそれを使う
+    #      (ローカル docker-compose / CI はこちら。jdbc: 付きで渡している)
+    #   2. 無ければ DB_HOST / DB_PORT / DB_NAME から jdbc URL を組み立てる
+    #      (Render はこちら。connectionString は jdbc: が付かないため個別取得して合成)
+    #   3. どちらも無ければ localhost (素のローカル起動)
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:reservecore}}
     username: ${SPRING_DATASOURCE_USERNAME:reservecore_user}
     password: ${SPRING_DATASOURCE_PASSWORD:reservecore_pass}
     driver-class-name: org.postgresql.Driver
