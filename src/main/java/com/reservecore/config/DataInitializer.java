@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <ol>
  *   <li>初期 ADMIN ユーザー（登録 API からは作れないためここで seed）</li>
  *   <li>デモ用の店舗・サービス・スタッフ・サンプル顧客
- *       （面接官がログイン直後に予約フローを体験できるようにするため）</li>
+ *       （ログイン直後に予約フローを体験できるようにするため）</li>
  * </ol>
  *
  * いずれも「既に存在すれば作らない」冪等な設計。Free DB が 90 日で失効しても、
@@ -117,7 +117,7 @@ public class DataInitializer implements CommandLineRunner {
         assignStaff(store, staff1);
         assignStaff(store, staff2);
 
-        // 4) サンプル顧客（面接官が「既存顧客」としてもログインできるよう用意）
+        // 4) サンプル顧客（デモ用の「既存顧客」としてログインできるよう用意）
         createUserIfAbsent("customer.tanaka@reservecore.com", "田中 美咲", Role.CUSTOMER);
 
         log.info("デモデータを投入しました（店舗1・サービス4・スタッフ2・顧客1）");
